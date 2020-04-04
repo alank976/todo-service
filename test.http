@@ -1,0 +1,14 @@
+
+GET http://localhost:8088/todos
+###
+GET http://localhost:8088/todos/123
+###
+
+POST http://localhost:8088/todos/123 
+Content-Type: application/json
+
+{
+  "id": "111",
+  "name": "aaaaaaaaa",
+  "description": "yooo"
+}
