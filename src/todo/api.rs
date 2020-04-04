@@ -1,9 +1,11 @@
 use actix_web::{error, web, HttpResponse, Responder};
+use log::{debug, error, info};
 
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 async fn get_all() -> impl Responder {
+    debug!("getting all items");
     HttpResponse::Ok().json(vec![Item {
         id: "111".to_string(),
         name: "hello".to_string(),
@@ -13,12 +15,14 @@ async fn get_all() -> impl Responder {
 
 async fn create(item: web::Json<Item>) -> Result<HttpResponse, error::Error> {
     let item = item.into_inner();
+    debug!("Creating item named {}", item.name);
     item.validate().map_err(error::ErrorBadRequest)?;
 
     Ok(HttpResponse::Ok().json(item))
 }
 
 async fn get_one(id: web::Path<String>) -> impl Responder {
+    debug!("get just one item id={:?}", id);
     HttpResponse::Ok().json(Item {
         id: id.into_inner(),
         name: "hello".to_string(),
