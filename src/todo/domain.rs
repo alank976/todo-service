@@ -1,48 +1,41 @@
-use std::time;
+use crate::todo::TodoRepositoryImpl;
 use uuid::Uuid;
 
 use log::debug;
 
-#[cfg(test)]
-use mockiato::mockable;
-
-#[cfg_attr(test, mockable)]
-pub trait TodoService {
-    fn get_all(&self) -> Vec<TodoItem>;
-    fn get_one(&self, id: Uuid) -> Option<TodoItem>;
-    fn create(&self, item: TodoItem) -> Option<TodoItem>;
+pub struct TodoServiceImpl {
+    repo: TodoRepositoryImpl,
 }
-
-pub struct TodoServiceImpl {}
 
 impl TodoServiceImpl {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(repo: TodoRepositoryImpl) -> Self {
+        Self { repo }
     }
 }
-impl TodoService for TodoServiceImpl {
-    fn get_all(&self) -> Vec<TodoItem> {
-        debug!("getting all items");
-        vec![TodoItem::new("random".to_string(), "nth".to_string())]
+
+impl TodoServiceImpl {
+    pub async fn get_all(&self) -> Result<Vec<TodoItem>, sqlx::Error> {
+        debug!("Getting all items");
+        self.repo.get_all().await
     }
 
-    fn get_one(&self, id: Uuid) -> Option<TodoItem> {
+    pub async fn get_one(&self, id: Uuid) -> Result<TodoItem, sqlx::Error> {
         debug!("get just one item id={:?}", id);
-        None
+        self.repo.get_one(id).await
     }
 
-    fn create(&self, item: TodoItem) -> Option<TodoItem> {
+    pub async fn create(&self, item: TodoItem) -> Result<Uuid, sqlx::Error> {
         debug!("Creating item named {}", item.name);
-        Some(TodoItem::new_from(item))
+        self.repo.create(item).await
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, sqlx::FromRow)]
 pub struct TodoItem {
     pub id: Option<Uuid>,
     pub name: String,
     pub content: String,
-    pub created_time: time::Instant,
+    pub created_time: time::PrimitiveDateTime,
 }
 
 impl TodoItem {
@@ -51,11 +44,7 @@ impl TodoItem {
             id: Some(Uuid::new_v4()),
             name,
             content,
-            created_time: time::Instant::now(),
+            created_time: time::PrimitiveDateTime::now(),
         }
-    }
-
-    fn new_from(other: Self) -> Self {
-        Self::new(other.name, other.content)
     }
 }

@@ -1,50 +1,54 @@
-use crate::injection::Container;
-use actix_web::{error, web, web::Data, HttpResponse, Responder};
+use actix_web::{error, web, web::Data, HttpResponse};
 use uuid::Uuid;
 
-use super::domain::TodoItem;
+use crate::todo::TodoItem;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-#[cfg(test)]
-use mockiato::mockable;
+use crate::Components;
+use std::sync::Arc;
 
-#[cfg_attr(test, mockable)]
-trait Greeter {
-    fn greet(&self, name: &str) -> String;
-}
-
-async fn get_all(app_container: Data<Container>) -> impl Responder {
-    HttpResponse::Ok().json(
-        (&app_container.todo_service)
-            .get_all()
-            .into_iter()
-            .map(|i| ItemDto::from_domain(i))
-            .collect::<Vec<ItemDto>>(),
-    )
+async fn get_all(components: Data<Arc<Components>>) -> Result<HttpResponse, error::Error> {
+    components
+        .todo_service
+        .get_all()
+        .await
+        .map_err(error::ErrorInternalServerError)
+        .map(|items| {
+            items
+                .into_iter()
+                .map(|i| ItemDto::from_domain(i))
+                .collect::<Vec<ItemDto>>()
+        })
+        .map(|dtos| HttpResponse::Ok().json(dtos))
 }
 
 async fn create(
     item: web::Json<ItemDto>,
-    app_container: Data<Container>,
+    components: Data<Arc<Components>>,
 ) -> Result<HttpResponse, error::Error> {
     let dto = item.into_inner();
     dto.validate().map_err(error::ErrorBadRequest)?;
-
-    (&app_container.todo_service)
+    components
+        .todo_service
         .create(dto.to_domain())
-        .ok_or(error::ErrorInternalServerError("failed to create"))
-        .map(ItemDto::from_domain)
-        .map(|dto| HttpResponse::Ok().json(dto))
+        .await
+        .map_err(error::ErrorInternalServerError)
+        .map(|created_id| HttpResponse::Ok().json(created_id))
 }
 
 async fn get_one(
     id: web::Path<Uuid>,
-    app_container: Data<Container>,
+    components: Data<Arc<Components>>,
 ) -> Result<HttpResponse, error::Error> {
-    (&app_container.todo_service)
+    components
+        .todo_service
         .get_one(id.into_inner())
-        .ok_or(error::ErrorNotFound("item not found"))
+        .await
+        .map_err(|e: sqlx::Error| match e {
+            sqlx::Error::RowNotFound => error::ErrorNotFound("not found"),
+            e @ _ => error::ErrorInternalServerError(e),
+        })
         .map(ItemDto::from_domain)
         .map(|dto| HttpResponse::Ok().json(dto))
 }

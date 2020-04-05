@@ -1,0 +1,6 @@
+CREATE TABLE TODO_ITEM (
+    id UUID PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    content VARCHAR,
+    created_time TIMESTAMP NOT NULL
+);
