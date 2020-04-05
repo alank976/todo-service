@@ -1,0 +1,31 @@
+version: "3"
+services:
+  db:
+    image: postgres:alpine
+    ports: 
+      - 5432:5432
+    environment: 
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+      POSTGRES_DB: todo
+    networks: 
+      - backend
+  flyway:
+    image: flyway/flyway:latest-alpine
+    command: -url=jdbc:postgresql://db:5432/todo -user=todo -password=todo -connectRetries=60 migrate
+    volumes: 
+      - ./flyway:/flyway/sql
+    depends_on: 
+      - db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+    networks: 
+      - backend
+networks: 
+  backend: 
+
+      # app:
+  #   build: .
