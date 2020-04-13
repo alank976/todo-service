@@ -23,22 +23,23 @@ impl TodoRepositoryImpl {
 
 impl TodoRepositoryImpl {
     pub async fn create(&self, item: TodoItem) -> Result<Uuid, sqlx::Error> {
-        let record = sqlx::query!(
+        sqlx::query_as(
             r#"
             INSERT INTO todo_item ( id, name, content, created_time )
             VALUES ( $1, $2, $3, $4 )
             RETURNING id"#,
-            item.id,
-            item.name,
-            item.content,
-            item.created_time
         )
+        .bind(item.id)
+        .bind(item.name)
+        .bind(item.content)
+        .bind(item.created_time)
         .fetch_one(&self.pool)
-        .await?;
-        Ok(record.id)
+        .await
+        .map(|r: (Uuid,)| r.0)
     }
     pub async fn get_all(&self) -> Result<Vec<TodoItem>, sqlx::Error> {
-        sqlx::query_as!(TodoItem, "SELECT * FROM todo_item")
+        sqlx::query_as("SELECT * FROM todo_item")
+            // sqlx::query_as!(TodoItem, "SELECT * FROM todo_item")
             .fetch_all(&self.pool)
             .await
     }

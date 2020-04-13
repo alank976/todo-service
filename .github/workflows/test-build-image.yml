@@ -1,0 +1,18 @@
+name: Test and Build Docker image
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cargo-install
+      uses: actions-rs/cargo@v1.0.1
+      with:
+        command: install 
+        args: --path .
