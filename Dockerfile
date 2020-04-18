@@ -3,8 +3,8 @@ FROM rust as builder
 # install pre-requisites for cross-compile to musl
 RUN apt-get update
 RUN apt-get -y install musl-tools  && rm -rf /var/lib/apt/lists/*
-COPY --chown=root install-openssl.sh .
-RUN ./install-openssl.sh
+COPY install-openssl.sh .
+RUN chmod +x install-openssl.sh && ./install-openssl.sh
 RUN rustup target add x86_64-unknown-linux-musl
 
 # build once for docker cache
@@ -25,6 +25,5 @@ FROM alpine
 RUN USER=root adduser -D -u 10001 dummy
 COPY --from=builder /usr/local/cargo/bin/todo-service /usr/local/bin/todo-service
 USER dummy
-CMD ["todo-service"]
-
 EXPOSE 8088
+CMD ["todo-service"]
