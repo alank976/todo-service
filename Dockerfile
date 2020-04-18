@@ -3,7 +3,7 @@ FROM rust as builder
 # install pre-requisites for cross-compile to musl
 RUN apt-get update
 RUN apt-get -y install musl-tools  && rm -rf /var/lib/apt/lists/*
-COPY install-openssl.sh .
+COPY --chown=root install-openssl.sh .
 RUN ./install-openssl.sh
 RUN rustup target add x86_64-unknown-linux-musl
 
