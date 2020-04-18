@@ -1,9 +1,30 @@
 FROM rust as builder
-COPY . .
-RUN cargo install --path .
 
-# TODO try alpine before going GCP
-FROM debian:buster-slim 
-# RUN apt-get update && apt-get install -y extra-runtime-dependencies
+# install pre-requisites for cross-compile to musl
+RUN apt-get update
+RUN apt-get -y install musl-tools  && rm -rf /var/lib/apt/lists/*
+COPY install-openssl.sh .
+RUN ./install-openssl.sh
+RUN rustup target add x86_64-unknown-linux-musl
+
+# build once for docker cache
+RUN USER=root cargo new --bin todo-service
+WORKDIR /todo-service
+COPY Cargo.toml Cargo.lock ./
+ENV PKG_CONFIG_ALLOW_CROSS=1
+ENV OPENSSL_STATIC=true
+ENV OPENSSL_DIR=/openssl-musl
+RUN cargo build --release --target x86_64-unknown-linux-musl
+
+# build again with code change (if any)
+COPY src ./src
+RUN cargo install --target x86_64-unknown-linux-musl --path .
+
+# runnable
+FROM alpine
+RUN USER=root adduser -D -u 10001 dummy
 COPY --from=builder /usr/local/cargo/bin/todo-service /usr/local/bin/todo-service
+USER dummy
 CMD ["todo-service"]
+
+EXPOSE 8088
