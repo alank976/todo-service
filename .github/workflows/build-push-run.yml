@@ -10,11 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: checkout
+      uses: actions/checkout@v2
     - name: build docker image
       run: docker build -t gcr.io/alank-first-project/todo-service .
     - name: Deploy service to Cloud Run
-      uses: stefda/action-cloud-run@1.0.0
+      uses: stefda/action-cloud-run@v1.0
       with:
         image: gcr.io/alank-first-project/todo-service
         service: todo-service
