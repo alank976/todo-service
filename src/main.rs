@@ -15,6 +15,8 @@ async fn main() -> io::Result<()> {
     std::env::set_var("DATABASE_URL", "postgresql://todo:todo@localhost:5432/todo");
     std::env::set_var("RUST_LOG", "debug,my_errors=debug,actix_web=info");
     std::env::set_var("RUST_BACKTRACE", "1");
+    let url = std::env::var("PORT")
+        .map(|p|format!("127.0.0.1:{}"))?;
     env_logger::init();
 
     let app_data = Arc::new(Components::new().await);
@@ -25,7 +27,7 @@ async fn main() -> io::Result<()> {
             .configure(todo::handler::config)
             .wrap(Logger::default())
     })
-    .bind("127.0.0.1:8088")?
+    .bind(url)?
     .run()
     .await
 }
