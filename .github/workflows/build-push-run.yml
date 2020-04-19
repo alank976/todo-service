@@ -21,7 +21,6 @@ jobs:
       uses: actions/checkout@v2
     - name: build docker image
       run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA .
-
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
@@ -29,22 +28,9 @@ jobs:
         service_account_email: ${{ secrets.RUN_SA_EMAIL }}
         service_account_key: ${{ secrets.RUN_SA_KEY }}
         project_id: ${{ secrets.RUN_PROJECT }}
-    
-    - name: configure docker to GCR
+    - name: configure docker to use GCR
       run: gcloud auth configure-docker
     - name: push image to GCR
       run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
-    # Build and push image to Google Container Registry
-    # - name: Build
-    #   run: |-
-    #     gcloud builds submit \
-    #       --quiet \
-    #       --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
-    # - name: Deploy service to Cloud Run
-    #   uses: stefda/action-cloud-run@v1.0
-    #   with:
-    #     image: gcr.io/alank-first-project/todo-service
-    #     service: todo-service
-    #     project: alank-first-project
-    #     region: us-east1
-    #     service key: ${{ secrets.GCP_AUTH }}
+    - name: deploy to Google Cloud Run
+      run: gcloud run deploy --region us-central1 --image gcr.io/$PROJECT-ID/$SERVICE_NAME:$GITHUB_SHA --platform managed
