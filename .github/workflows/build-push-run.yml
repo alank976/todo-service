@@ -33,4 +33,9 @@ jobs:
     - name: push image to GCR
       run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA
     - name: deploy to Google Cloud Run
-      run: gcloud run deploy --region us-central1 --image gcr.io/$PROJECT-ID/$SERVICE_NAME:$GITHUB_SHA --platform managed
+      run: |-
+        gcloud run deploy "$SERVICE_NAME" \
+          --region "$RUN_REGION" \
+          --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+          --platform "managed" \
+          --allow-unauthenticated
