@@ -12,7 +12,7 @@ use todo::{TodoRepositoryImpl, TodoServiceImpl};
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
-    // std::env::set_var("DATABASE_URL", "postgresql://todo:todo@localhost:5432/todo");
+    std::env::set_var("DATABASE_URL", "postgresql://todo:todo@localhost:5432/todo");
     std::env::set_var("RUST_LOG", "debug,my_errors=debug,actix_web=info");
     std::env::set_var("RUST_BACKTRACE", "1");
     let url = std::env::var("PORT")
