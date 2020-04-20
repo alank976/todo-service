@@ -25,7 +25,9 @@ jobs:
         cmd: cargo install --target x86_64-unknown-linux-musl --path .
     - name: docker build
       run: |-
-        ls -lrt
+        ls -lrta
+        echo $HOME
+        ls $HOME/.cargo -lrta
         docker build -t test-only -f Dockerfile-cp .
     # - name: build docker image
     #   run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
