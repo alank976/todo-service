@@ -21,8 +21,8 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     - uses: zhxiaogg/cargo-static-build@master
-    - name: build
-      run: cargo build --release --target x86_64-unknown-linux-musl
+    - name: build install
+      run: cargo install --target x86_64-unknown-linux-musl --path .
     - name: docker build
       run: docker build -t test-only -f Dockerfile-cp .
     # - name: build docker image
