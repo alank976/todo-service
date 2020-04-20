@@ -26,8 +26,9 @@ jobs:
     - name: docker build
       run: |-
         ls -lrta
-        echo $HOME
-        ls $HOME/.cargo -lrta
+        mkdir -p bin
+        cp $HOME/.cargo/bin/todo-service ./bin/todo-service
+        ls -lrta
         docker build -t test-only -f Dockerfile-cp .
     # - name: build docker image
     #   run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
