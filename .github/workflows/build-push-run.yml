@@ -21,10 +21,12 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     - uses: alank976/cargo-static-build@master
-    - name: build install
-      run: cargo install --target x86_64-unknown-linux-musl --path .
+      with:
+        cmd: cargo install --target x86_64-unknown-linux-musl --path .
     - name: docker build
-      run: docker build -t test-only -f Dockerfile-cp .
+      run: |-
+        ls -lrt
+        docker build -t test-only -f Dockerfile-cp .
     # - name: build docker image
     #   run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
     # Setup gcloud CLI
