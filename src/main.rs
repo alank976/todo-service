@@ -16,12 +16,12 @@ async fn main() -> io::Result<()> {
     std::env::set_var("RUST_LOG", "debug,my_errors=debug,actix_web=info");
     std::env::set_var("RUST_BACKTRACE", "1");
     let url = std::env::var("PORT")
-        .map(|p|format!("127.0.0.1:{}", p))
+        .map(|p| format!("0.0.0.0:{}", p))
         .unwrap();
     env_logger::init();
 
     let app_data = Arc::new(Components::new().await);
-    
+
     HttpServer::new(move || {
         App::new()
             .data(Arc::clone(&app_data))

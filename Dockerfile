@@ -28,6 +28,4 @@ FROM alpine
 RUN USER=root adduser -D -u 10001 dummy
 COPY --from=builder /usr/local/cargo/bin/todo-service /usr/local/bin/todo-service
 USER dummy
-EXPOSE 8088
-ENV PORT=8088
 CMD ["todo-service"]
