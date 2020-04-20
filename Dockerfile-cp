@@ -1,4 +1,4 @@
 FROM alpine
-COPY ./bin/todo-service /usr/local/bin/todo-service
+COPY ./todo-service /usr/local/bin/todo-service
 USER dummy
 CMD ["todo-service"]
