@@ -21,7 +21,7 @@ jobs:
       image: node:10.16-jessie
       volumes:
         - /app:/app
-        - /cargo:/root/.cargo
+        - /bin:/output-bin
       options: --cpus 1
     steps:
     - name: checkout
@@ -34,13 +34,15 @@ jobs:
         ls -lrta /app
         echo "github home"
         ls -lrta /github/home
-        echo "/cargo"
-        ls -lrta /cargo
-        echo "/root/.cargo"
-        ls -lrta /root/.cargo
-    # - uses: alank976/cargo-static-build@master
-    #   with:
-    #     cmd: cargo install --target x86_64-unknown-linux-musl --path . && cp $HOME/.cargo/bin/todo-service /app/todo-service
+        echo "output bin"
+        ls -lrta /output-bin
+    - uses: alank976/cargo-static-build@master
+      with:
+        cmd: |-
+          pwd
+          cargo install --target x86_64-unknown-linux-musl --path . 
+          ls -lrta /output-bin
+          cp $HOME/.cargo/bin/todo-service /output-bin/todo-service
     # - name: docker build
     #   run: |-
     #     pwd
