@@ -17,11 +17,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: node:10.16-jessie
-      volumes:
-        - /app:/app
-      options: --cpus 1
     steps:
     - name: checkout
       uses: actions/checkout@v2
@@ -29,10 +24,9 @@ jobs:
       run: |-
         echo "PWD"
         pwd
-        echo "app folder"
-        ls -lrta /app
+        echo $HOME
         echo "github home"
-        ls -lrta /github/home
+        ls -lrta $HOME
     - uses: alank976/cargo-static-build@master
       with:
         cmd: |-
@@ -42,10 +36,8 @@ jobs:
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
-        echo "After: /app"
-        ls -lrta /app
         echo "github home"
-        ls -lrta /github/home/bin
+        ls -lrta $HOME
     # - name: docker build
     #   run: |-
     #     pwd
