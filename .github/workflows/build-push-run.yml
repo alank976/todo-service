@@ -3,8 +3,6 @@ name: Build Push Run
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 env:
   PROJECT_ID: alank-first-project
@@ -12,8 +10,7 @@ env:
   RUN_REGION: us-central1
   SERVICE_NAME: todo-service
   DB_CONNECTION: alank-first-project:us-central1:first-postgres
-  IMAGE_TAG: gcr.io/${{ secrets.RUN_PROJECT }}/todo-service:latest
-    
+  IMAGE_TAG: gcr.io/${{ secrets.RUN_PROJECT }}/todo-service:latest    
 
 jobs:
   deploy:
