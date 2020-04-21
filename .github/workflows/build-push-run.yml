@@ -21,6 +21,8 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
+    - name: test build docker
+      run: docker build -t todo .
     - name: test run
       run: |-
         ln -s /root/.cargo $HOME/.cargo
