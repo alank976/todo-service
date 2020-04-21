@@ -1,4 +1,4 @@
-FROM clux/muslrust:stable
+FROM clux/muslrust:stable as builder
 
 # RUN USER=root cargo new --bin todo-service
 # WORKDIR /todo-service
