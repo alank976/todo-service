@@ -27,9 +27,9 @@ jobs:
     - uses: alank976/cargo-static-build@master
       with:
         cmd: |-
-          pwd
           ls -lrta $HOME/.cargo
           echo "foo" > $HOME/.cargo/bin/foo.log
+          ls -lrta $HOME/.cargo/bin
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
