@@ -26,10 +26,10 @@ jobs:
         ln -s /root/.cargo $HOME/.cargo
         ln -s /root/.rustup $HOME/.rustup
         which cargo
-        cargo --version
+        echo "HOME=$HOME"
         echo "github home cargo"
         ls -lrta $HOME/.cargo/bin
-        which docker
+        docker images
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
