@@ -12,7 +12,8 @@ env:
   RUN_REGION: us-central1
   SERVICE_NAME: todo-service
   DB_CONNECTION: alank-first-project:us-central1:first-postgres
-  IMAGE_TAG: "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest"
+  IMAGE_TAG: gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
+    
 
 jobs:
   deploy:

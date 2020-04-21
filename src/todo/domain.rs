@@ -2,7 +2,6 @@ use crate::todo::TodoRepositoryImpl;
 use uuid::Uuid;
 
 use log::debug;
-use std::rc::Rc;
 
 pub struct TodoServiceImpl {
     repo: TodoRepositoryImpl,
@@ -49,44 +48,3 @@ impl TodoItem {
         }
     }
 }
-
-// TODO: manual DI blueprint
-
-// struct A {}
-
-// struct B {
-//     a: Rc<dyn IA>,
-// }
-
-// struct C {
-//     a: Rc<dyn IA>,
-//     b: Rc<dyn IB>,
-// }
-// trait IA {
-//     fn aaa(&self) -> i32;
-// }
-
-// impl IA for A {
-//     fn aaa(&self) -> i32 {
-//         3
-//     }
-// }
-// trait IB {
-//     fn bbb(&self) -> String;
-// }
-
-// impl IB for B {
-//     fn bbb(&self) -> String {
-//         "TODO".to_string()
-//     }
-// }
-
-// fn init_di() {
-//     let a = Rc::new(A {});
-//     let b = Rc::new(B { a: a.clone() });
-//     let c = C {
-//         a: a.clone(),
-//         b: b.clone(),
-//     };
-//     let a_result = c.a.aaa();
-// }
