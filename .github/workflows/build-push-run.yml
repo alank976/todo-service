@@ -34,18 +34,18 @@ jobs:
         echo "github home"
         ls -lrta /github/home
     - uses: alank976/cargo-static-build@master
-      volumes:
-        - /app:/app
       with:
         cmd: |-
           pwd
-          ls -lrta /app
-          echo "foo" > /app/foo.log
+          ls -lrta $HOME/.cargo
+          echo "foo" > $HOME/.cargo/bin/foo.log
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
         echo "After: /app"
         ls -lrta /app
+        echo "github home"
+        ls -lrta /github/home/bin
     # - name: docker build
     #   run: |-
     #     pwd
