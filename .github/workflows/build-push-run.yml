@@ -17,20 +17,17 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: clux/muslrust:stable
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: test ls
+    - name: test run
       run: |-
+        which cargo
+        cargo --version
         echo "github home cargo"
         ls -lrta $HOME/.cargo/bin
-    - uses: alank976/cargo-static-build@master
-      with:
-        cmd: |-
-          ls -lrta $HOME/.cargo
-          echo "foo" > $HOME/.cargo/bin/foo.log
-          ls -lrta $HOME/.cargo/bin
-          docker images
+        which docker
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
