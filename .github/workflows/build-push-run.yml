@@ -12,58 +12,34 @@ env:
   RUN_REGION: us-central1
   SERVICE_NAME: todo-service
   DB_CONNECTION: alank-first-project:us-central1:first-postgres
+  IMAGE_TAG: gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
     
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    # container: clux/muslrust:stable
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: test build docker
-      run: docker build -t todo .
-    - name: test run
-      run: |-
-        ln -s /root/.cargo $HOME/.cargo
-        ln -s /root/.rustup $HOME/.rustup
-        which cargo
-        echo "HOME=$HOME"
-        echo "github home cargo"
-        ls -lrta $HOME/.cargo/bin
-        docker images
-# cp $HOME/.cargo/bin/todo-service /app/todo-service
-    - name: verify if mount works
-      run: |-
-        echo "github home cargo bin"
-        ls -lrta $HOME/.cargo/bin
-        docker images
-    # - name: docker build
-    #   run: |-
-    #     pwd
-    #     ls /app -lrta
-    #     cp /app/todo-service ./todo-service
-    #     ls -lrta
-    #     docker build -t test-only -f Dockerfile-cp .
-    # - name: build docker image
-    #   run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
+    - name: build image
+      run: docker build -t $IMAGE_TAG .
     # Setup gcloud CLI
-    # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-    #   with:
-    #     service_account_email: ${{ secrets.RUN_SA_EMAIL }}
-    #     service_account_key: ${{ secrets.RUN_SA_KEY }}
-    #     project_id: ${{ secrets.RUN_PROJECT }}
-    # - name: configure docker to use GCR
-    #   run: gcloud auth configure-docker
-    # - name: push image to GCR
-    #   run: docker push gcr.io/$PROJECT_ID/$SERVICE_NAME:latest
-    # - name: deploy to Google Cloud Run
-    #   run: |-
-    #     gcloud run deploy "$SERVICE_NAME" \
-    #       --region "$RUN_REGION" \
-    #       --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest" \
-    #       --platform "managed" \
-    #       --allow-unauthenticated 
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_email: ${{ secrets.RUN_SA_EMAIL }}
+        service_account_key: ${{ secrets.RUN_SA_KEY }}
+        project_id: ${{ secrets.RUN_PROJECT }}
+    - name: configure docker to use GCR
+      run: gcloud auth configure-docker
+    - name: push image to GCR
+      run: docker push $IMAGE_TAG
+    - name: deploy to Google Cloud Run
+      run: |-
+        gcloud run deploy "$SERVICE_NAME" \
+          --region "$RUN_REGION" \
+          --image "$IMAGE_TAG" \
+          --platform "managed" \
+          --allow-unauthenticated 
 
 
 # \
