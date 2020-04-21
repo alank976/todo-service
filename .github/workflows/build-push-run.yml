@@ -30,11 +30,13 @@ jobs:
           ls -lrta $HOME/.cargo
           echo "foo" > $HOME/.cargo/bin/foo.log
           ls -lrta $HOME/.cargo/bin
+          docker images
 # cp $HOME/.cargo/bin/todo-service /app/todo-service
     - name: verify if mount works
       run: |-
         echo "github home cargo bin"
         ls -lrta $HOME/.cargo/bin
+        docker images
     # - name: docker build
     #   run: |-
     #     pwd
