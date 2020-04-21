@@ -34,6 +34,8 @@ jobs:
         echo "github home"
         ls -lrta /github/home
     - uses: alank976/cargo-static-build@master
+      volumes:
+        - /app:/app
       with:
         cmd: |-
           pwd
