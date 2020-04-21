@@ -25,16 +25,24 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - uses: alank976/cargo-static-build@master
-      with:
-        cmd: cargo install --target x86_64-unknown-linux-musl --path . && cp $HOME/.cargo/bin/todo-service /app/todo-service
-    - name: docker build
+    - name: test ls
       run: |-
+        echo "PWD"
         pwd
-        ls /app -lrta
-        cp /app/todo-service ./todo-service
-        ls -lrta
-        docker build -t test-only -f Dockerfile-cp .
+        echo "app folder"
+        ls -lrta /app
+        echo "github home"
+        ls -lrta /github/home
+    # - uses: alank976/cargo-static-build@master
+    #   with:
+    #     cmd: cargo install --target x86_64-unknown-linux-musl --path . && cp $HOME/.cargo/bin/todo-service /app/todo-service
+    # - name: docker build
+    #   run: |-
+    #     pwd
+    #     ls /app -lrta
+    #     cp /app/todo-service ./todo-service
+    #     ls -lrta
+    #     docker build -t test-only -f Dockerfile-cp .
     # - name: build docker image
     #   run: docker build -t gcr.io/$PROJECT_ID/$SERVICE_NAME:latest .
     # Setup gcloud CLI
