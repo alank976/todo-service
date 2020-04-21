@@ -23,6 +23,8 @@ jobs:
       uses: actions/checkout@v2
     - name: test run
       run: |-
+        ln -s /root/.cargo $HOME/.cargo
+        ln -s /root/.rustup $HOME/.rustup
         which cargo
         cargo --version
         echo "github home cargo"
